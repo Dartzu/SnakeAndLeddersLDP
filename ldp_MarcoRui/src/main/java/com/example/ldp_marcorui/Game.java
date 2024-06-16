@@ -145,7 +145,7 @@ public class Game implements Runnable{
     Player playerOne;
     Player playerTwo;
 
-    private String selectedColor;
+    public String selectedColor;
     private String ip;
     private int port;
     private Thread thread;
@@ -157,6 +157,8 @@ public class Game implements Runnable{
     private boolean isPlayerOneTurn = false;
     private boolean isPlayerTwoTurn = true;
     private boolean playerLeft = false;
+    public Image imgPlayerOne;
+    public Image imgPlayerTwo;
 
     Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1500), ev -> {
         textBeforeValue.setFill(Color.rgb(0, 0, 255));
@@ -259,6 +261,17 @@ public class Game implements Runnable{
             socket = new Socket(ip, port);
             dos = new DataOutputStream(socket.getOutputStream());
             dis = new DataInputStream(socket.getInputStream());
+            dos.writeUTF(selectedColor);  // Envia a cor selecionada pelo cliente
+            String serverColor = dis.readUTF();  // Recebe a cor do servidor
+
+            imgPlayerOne = new Image("/img/" + selectedColor + ".png");
+            playerOneColor.setImage(imgPlayerOne);
+            playerOneColor.setVisible(true);
+
+            imgPlayerTwo = new Image("/img/" + serverColor + ".png");
+            playerTwoColor.setImage(imgPlayerTwo);
+            playerTwoColor.setVisible(true);
+
             isAccepted = true;
             isPlayerTwoTurn = true;
         } catch (IOException e) {
@@ -278,17 +291,23 @@ public class Game implements Runnable{
             socket = serverSocket.accept();
             dos = new DataOutputStream(socket.getOutputStream());
             dis = new DataInputStream(socket.getInputStream());
-            isAccepted = true;
-            System.out.println("O OPONENTE ENTROU NO JOGO");
+            String clientColor = dis.readUTF();  // Recebe a cor do cliente
+
             playerTwo = new Player(nameInput, playerTwoColor);
-            Image img = new Image("/img/" + selectedColor + ".png");
-            playerTwoColor.setImage(img);
+            imgPlayerTwo = new Image("/img/" + clientColor + ".png");
+            playerTwoColor.setImage(imgPlayerTwo);
             playerTwoColor.setVisible(true);
+
+            dos.writeUTF(selectedColor);  // Envia a cor selecionada pelo servidor
+
             playerTwo.setTilePlayer(board.get(0));
             playerTwo.getColor().setLayoutX(board.get(0).getX());
             playerTwo.getColor().setLayoutY(board.get(0).getY());
             textBeforeValue.setLayoutX(515);
             textBeforeValue.setText("Sua vez de jogar!");
+
+            isAccepted = true;
+            System.out.println("O OPONENTE ENTROU NO JOGO");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -346,18 +365,18 @@ public class Game implements Runnable{
         }
 
         // Localização das cobras e escadas
-        EndTile snake1 = new EndTile(board.get(3));
-        board.get(37).setSnake(snake1);
-        EndTile snake2 = new EndTile(board.get(10));
-        board.get(28).setSnake(snake2);
-        EndTile snake3 = new EndTile(board.get(58));
-        board.get(96).setSnake(snake3);
-        EndTile ladder1 = new EndTile(board.get(35));
-        board.get(5).setSnake(ladder1);
-        EndTile ladder2 = new EndTile(board.get(88));
-        board.get(54).setSnake(ladder2);
-        EndTile ladder3 = new EndTile(board.get(79));
-        board.get(43).setSnake(ladder3);
+        EndTile cobra1 = new EndTile(board.get(2));
+        board.get(36).setSnake(cobra1);
+        EndTile cobra2 = new EndTile(board.get(9));
+        board.get(27).setSnake(cobra2);
+        EndTile cobra3 = new EndTile(board.get(57));
+        board.get(95).setSnake(cobra3);
+        EndTile escada1 = new EndTile(board.get(34));
+        board.get(4).setLadder(escada1);
+        EndTile escada2 = new EndTile(board.get(87));
+        board.get(53).setLadder(escada2);
+        EndTile escada3 = new EndTile(board.get(78));
+        board.get(42).setLadder(escada3);
     }
 
     /**
@@ -389,13 +408,19 @@ public class Game implements Runnable{
         int previousTileIndex = board.indexOf(player.getTilePlayer());
 
         // Verifica se o jogador está na primeira casa e não rolou 6
-        if (player.getTilePlayer().getId() == 1 && diceValue != 6) {
+        if (player.getTilePlayer().getId() == 1 && diceValue != 6 && !playerOne.getCanAdvance() && !playerTwo.getCanAdvance()) {
             player.getColor().setLayoutX(board.get(0).getX());
             player.getColor().setLayoutY(board.get(0).getY());
             textBeforeValue.setLayoutX(456);
             textBeforeValue.setText("Precisas do dado 6 para começar!");
             textDiceValue.setVisible(false);
             return;
+        }
+
+        // Atualiza a regra para permitir que ambos os jogadores avancem se qualquer um tirar 6
+        if (diceValue == 6) {
+            playerOne.setCanAdvance(true);
+            playerTwo.setCanAdvance(true);
         }
 
         // Move o jogador para a nova casa, se não ultrapassar o limite do tabuleiro
@@ -426,7 +451,7 @@ public class Game implements Runnable{
             btnExit.setLayoutY(216);
             dice.setVisible(false);
             textDiceValue.setVisible(false);
-            textBeforeValue.setText(playerOne.getName() + " GANHOU!");
+            textBeforeValue.setText("GANHOU!");
         }
     }
 
@@ -592,7 +617,6 @@ public class Game implements Runnable{
                     boxInputId.setVisible(false);
                     btnPlayGame.setVisible(false);
                     btnRoll.setVisible(true);
-                    //btnRoll.setDisable(true);
                     btnExitGame.setVisible(true);
                     textBeforeValue.setVisible(true);
                     dice.setVisible(true);
@@ -604,15 +628,13 @@ public class Game implements Runnable{
                         textBeforeValue.setText("À espera do oponente...");
                         textBeforeValue.setLayoutX(491);
                         playerOne = new Player(nameInput, playerOneColor);
-                        Image img = new Image("/img/" + selectedColor + ".png");
-                        playerOneColor.setImage(img);
-                        System.out.println(img);
+                        imgPlayerOne = new Image("/img/" + selectedColor + ".png");
+                        playerOneColor.setImage(imgPlayerOne);
                         playerOneColor.setVisible(true);
                         playerOne.setTilePlayer(board.get(0));
                         playerOne.getColor().setLayoutX(board.get(0).getX());
                         playerOne.getColor().setLayoutY(board.get(0).getY());
                     } else {
-                        //btnRoll.setDisable(false);
                         if(isPlayerTwoTurn) {
                             textBeforeValue.setLayoutX(500);
                             textBeforeValue.setText("Jogada do oponente!");
@@ -620,14 +642,9 @@ public class Game implements Runnable{
                             textBeforeValue.setLayoutX(504);
                             textBeforeValue.setText("É a tua vez de jogar!");
                         }
-                        //btnRoll.setDisable(false);
                         playerTwo = new Player(nameInput, playerTwoColor);
-                        Image img = new Image("/img/" + selectedColor + ".png");
-                        playerTwoColor.setImage(img);
                         playerTwoColor.setVisible(true);
                         playerOne = new Player(nameInput, playerOneColor);
-                        //img = new Image("/img/" + selectedColor + ".png");
-                        //playerOneColor.setImage(img);
                         playerOneColor.setVisible(true);
                         playerOne.setTilePlayer(board.get(0));
                         playerTwo.setTilePlayer(board.get(0));

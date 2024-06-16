@@ -46,11 +46,7 @@
             <Font size="28.0" />
         </font>
     </Label>
-    <Label fx:id="textRuleId" accessibleRole="TEXT_AREA" alignment="TOP_LEFT" layoutX="35.0" layoutY="68.0" prefHeight="290.0" prefWidth="731.0" text="1. Preparação&#10;&#9;a.    Cada jogador escolhe uma peça.&#10;&#9;b.    Os jogadores decidem a ordem de jogada (neste caso vai ser jogar o dado e quem tirar o número 6 começa).&#10;2. Movimentação&#10;&#9;a.    O jogador “move” seu peão o número de casas correspondente ao valor tirado no dado.&#10;3. Escadas&#10;&#9;a.    Se um jogador parar na base de uma escada, ele sobe até o topo da escada. As escadas ajudam o jogador a avançar no tabuleiro.&#10;4. Cobras&#10;&#9;a.    Se um jogador parar na cabeça de uma cobra, ele desce até a cauda da cobra. As cobras fazem o jogador retroceder no tabuleiro.&#10;5. Interações&#10;&#9;a.    Se um jogador cair na mesma casa de outro jogador, não há penalidade ou ação especial, ou seja, ambos os jogadores permanecem nas mesmas casas até a próxima jogada." textAlignment="JUSTIFY" visible="false" wrapText="true" AnchorPane.leftAnchor="35.0" AnchorPane.rightAnchor="34.0">
-        <font>
-            <Font size="13.0" />
-        </font>
-    </Label>
+    <Label fx:id="textRuleId" accessibleRole="TEXT_AREA" alignment="TOP_LEFT" layoutX="20.0" layoutY="64.0" prefHeight="290.0" prefWidth="720.0" text="1. Preparação&#10;&#9;a.    Cada jogador escolhe uma peça.&#10;&#9;b.    Os jogadores decidem a ordem de jogada (neste caso vai ser jogar o dado e quem tirar o número 6 começa).&#10;2. Movimentação&#10;&#9;a.    O jogador “move” seu peão o número de casas correspondente ao valor tirado no dado.&#10;3. Escadas&#10;&#9;a.    Se um jogador parar na base de uma escada, ele sobe até o topo da escada. As escadas ajudam o jogador a avançar no tabuleiro.&#10;4. Cobras&#10;&#9;a.    Se um jogador parar na cabeça de uma cobra, ele desce até a cauda da cobra. As cobras fazem o jogador retroceder no tabuleiro.&#10;5. Interações&#10;&#9;a.    Se um jogador cair na mesma casa de outro jogador, não há penalidade ou ação especial, ou seja, ambos os jogadores permanecem nas mesmas casas até a próxima jogada.&#10;&#9;b.    Para ganhar, é preciso tirar o número no dado preciso para a casa final (exemplo: se o jogador tiver na casa 99, terá que tirar 1 no dado para ganhar, se tirar mais, terá que voltar a tentar). acrecenta isso no interaçao nas regras." textAlignment="JUSTIFY" visible="false" wrapText="true" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="10.0" />
     <Button fx:id="btnExitToHome" layoutX="605.0" layoutY="343.0" mnemonicParsing="false" onAction="#exitHomeClicked" prefHeight="40.0" prefWidth="132.0" text="Voltar" visible="false">
         <font>
             <Font size="18.0" />
@@ -67,7 +63,7 @@
             <VBox alignment="CENTER" spacing="5.0">
                 <children>
                     <Circle fill="BLACK" radius="20.0" />
-                    <RadioButton fx:id="black" onAction="#handleColorSelection">
+                    <RadioButton fx:id="black" onAction="#handleColorSelection" toggleGroup="$group">
                         <toggleGroup>
                             <ToggleGroup fx:id="group" />
                         </toggleGroup>

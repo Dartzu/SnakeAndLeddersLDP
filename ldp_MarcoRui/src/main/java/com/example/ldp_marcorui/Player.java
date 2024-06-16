@@ -14,6 +14,7 @@ public class Player extends Circle{
     private ImageView color;
     /** O tile atual onde o jogador está posicionado. */
     private Tile tilePlayer;
+    private boolean canAdvance;
 
     /**
      * Cria um novo jogador com o nome e a cor especificados.
@@ -24,6 +25,7 @@ public class Player extends Circle{
     public Player(TextField name, ImageView color){
         this.name = String.valueOf(name);
         this.color = color;
+        this.canAdvance = false;
     }
 
     /**
@@ -69,6 +71,14 @@ public class Player extends Circle{
      */
     public Tile getTilePlayer(){
         return tilePlayer;
+    }
+
+    public boolean getCanAdvance() {
+        return canAdvance;
+    }
+
+    public void setCanAdvance(boolean canAdvance) {
+        this.canAdvance = canAdvance;
     }
 }
 
